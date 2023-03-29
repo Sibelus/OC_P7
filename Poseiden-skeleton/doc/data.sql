@@ -1,3 +1,6 @@
+-- TABLE CREATION
+-- BidList
+DROP TABLE IF EXISTS `BidList`;
 
 CREATE TABLE BidList (
   BidListId tinyint(4) NOT NULL AUTO_INCREMENT,
@@ -26,6 +29,10 @@ CREATE TABLE BidList (
   PRIMARY KEY (BidListId)
 );
 
+
+-- Trade
+DROP TABLE IF EXISTS `Trade`;
+
 CREATE TABLE Trade (
   TradeId tinyint(4) NOT NULL AUTO_INCREMENT,
   account VARCHAR(30) NOT NULL,
@@ -52,6 +59,10 @@ CREATE TABLE Trade (
   PRIMARY KEY (TradeId)
 );
 
+
+-- CurvePoint
+DROP TABLE IF EXISTS `CurvePoint`;
+
 CREATE TABLE CurvePoint (
   Id tinyint(4) NOT NULL AUTO_INCREMENT,
   CurveId tinyint,
@@ -63,6 +74,10 @@ CREATE TABLE CurvePoint (
   PRIMARY KEY (Id)
 );
 
+
+-- Rating
+DROP TABLE IF EXISTS `Rating`;
+
 CREATE TABLE Rating (
   Id tinyint(4) NOT NULL AUTO_INCREMENT,
   moodysRating VARCHAR(125),
@@ -72,6 +87,10 @@ CREATE TABLE Rating (
 
   PRIMARY KEY (Id)
 );
+
+
+-- RuleName
+DROP TABLE IF EXISTS `RuleName`;
 
 CREATE TABLE RuleName (
   Id tinyint(4) NOT NULL AUTO_INCREMENT,
@@ -85,6 +104,10 @@ CREATE TABLE RuleName (
   PRIMARY KEY (Id)
 );
 
+
+-- Users
+DROP TABLE IF EXISTS `Users`;
+
 CREATE TABLE Users (
   Id tinyint(4) NOT NULL AUTO_INCREMENT,
   username VARCHAR(125),
@@ -95,5 +118,7 @@ CREATE TABLE Users (
   PRIMARY KEY (Id)
 );
 
-insert into Users(fullname, username, password, role) values("Administrator", "admin", "$2a$10$pBV8ILO/s/nao4wVnGLrh.sa/rnr5pDpbeC4E.KNzQWoy8obFZdaa", "ADMIN");
-insert into Users(fullname, username, password, role) values("User", "user", "$2a$10$pBV8ILO/s/nao4wVnGLrh.sa/rnr5pDpbeC4E.KNzQWoy8obFZdaa", "USER");
+
+-- DATA INSERTION
+insert into Users(fullname, username, password, role) values("Administrator", "admin", "$2a$12$Beq87685j.HoBHddmHqJoud17DBTBKuXJZQ0X2scsQK2vulNKTwZC", "ADMIN");
+insert into Users(fullname, username, password, role) values("User", "user", "$2a$12$sVreX1us4JExny39Akqbyu7sW2e0JENCIv22F/As1.n2ezKsapQJK", "USER");
