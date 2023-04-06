@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 @Table(name = "bidlist")
 public class BidList {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "BidListId")
     private int BidListId;
 
@@ -23,7 +23,6 @@ public class BidList {
     @NotBlank(message = "Type is mandatory")
     @Column(name = "type")
     private String type;
-
 
     @Column(name = "bidQuantity")
     private double bidQuantity;
@@ -276,5 +275,19 @@ public class BidList {
 
     public void setSide(String side) {
         this.side = side;
+    }
+
+
+
+    // TO STRING
+
+    @Override
+    public String toString() {
+        return "BidList{" +
+                "BidListId=" + BidListId +
+                ", account='" + account + '\'' +
+                ", type='" + type + '\'' +
+                ", bidQuantity=" + bidQuantity +
+                '}';
     }
 }
