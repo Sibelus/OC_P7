@@ -57,8 +57,10 @@ public class UserController {
             model.addAttribute("user", user);
             return "user/update";
         } catch (NonExistantUserException e) {
+            String errorMsg = e.getMessage();
+            model.addAttribute("errorMsg", errorMsg);
             logger.error("Try to update non-existent user id: " + id + " with URL input");
-            return "redirect:/user/list";
+            return "403";
         }
     }
 

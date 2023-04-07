@@ -56,8 +56,11 @@ public class BidListController {
             model.addAttribute("bidList", bidList);
             return "bidList/update";
         } catch (NonExistantBidlistException e) {
+            String errorMsg = e.getMessage();
+            model.addAttribute("errorMsg", errorMsg);
             logger.error("Try to update non-existent bidList id: " + id + " with URL input");
-            return "redirect:/bidList/list";
+            return "403";
+            //return "redirect:/bidList/list";
         }
     }
 

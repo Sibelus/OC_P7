@@ -54,8 +54,10 @@ public class CurveController {
             model.addAttribute("curvePoint", curvePoint);
             return "curvePoint/update";
         } catch (NonExistantCurvePointException e) {
+            String errorMsg = e.getMessage();
+            model.addAttribute("errorMsg", errorMsg);
             logger.error("Try to update non-existent curvePoint id: " + id + " with URL input");
-            return "redirect:/curvePoint/list";
+            return "403";
         }
     }
 

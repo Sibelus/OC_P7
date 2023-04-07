@@ -56,8 +56,10 @@ public class RuleNameController {
             model.addAttribute("ruleName", ruleName);
             return "ruleName/update";
         } catch (NonExistantRuleNameException e) {
+            String errorMsg = e.getMessage();
+            model.addAttribute("errorMsg", errorMsg);
             logger.error("Try to update non-existent ruleName id: " + id + " with URL input");
-            return "redirect:/ruleName/list";
+            return "403";
         }
     }
 

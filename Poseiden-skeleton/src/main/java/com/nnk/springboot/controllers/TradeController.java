@@ -57,8 +57,10 @@ public class TradeController {
             model.addAttribute("trade", trade);
             return "trade/update";
         } catch (NonExistantTradeException e) {
+            String errorMsg = e.getMessage();
+            model.addAttribute("errorMsg", errorMsg);
             logger.error("Try to update non-existent trade id: " + id + " with URL input");
-            return "redirect:/trade/list";
+            return "403";
         }
     }
 
