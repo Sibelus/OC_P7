@@ -56,10 +56,8 @@ public class RatingController {
             model.addAttribute("rating", rating);
             return "rating/update";
         } catch (NonExistantRatingException e) {
-            String errorMsg = e.getMessage();
-            model.addAttribute("errorMsg", errorMsg);
             logger.error("Try to update non-existent rating id: " + id + " with URL input");
-            return "403";
+            return "redirect:/app/error";
         }
     }
 
