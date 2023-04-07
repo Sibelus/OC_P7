@@ -67,7 +67,7 @@ public class CurveController {
         }
 
         curvePoint.setId(id);
-        iCurvePointService.addCurvePoint(curvePoint);
+        iCurvePointService.updateCurvePoint(curvePoint);
         logger.debug("Update {} infos to db", curvePoint);
         model.addAttribute("curvePoints", iCurvePointService.getAllCurvePoints());
         return "redirect:/curvePoint/list";
