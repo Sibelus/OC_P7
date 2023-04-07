@@ -1,6 +1,13 @@
 package com.nnk.springboot.controllers;
 
+import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.domain.Trade;
+import com.nnk.springboot.service.ITradeService;
+import com.nnk.springboot.service.exceptions.NonExistantBidlistException;
+import com.nnk.springboot.service.exceptions.NonExistantTradeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,12 +20,16 @@ import javax.validation.Valid;
 
 @Controller
 public class TradeController {
-    // TODO: Inject Trade service
+
+    @Autowired
+    private ITradeService iTradeService;
+    Logger logger = LoggerFactory.getLogger(TradeController.class);
+
 
     @RequestMapping("/trade/list")
     public String home(Model model)
     {
-        // TODO: find all Trade, add to model
+        model.addAttribute("trades", iTradeService.getAllTrades());
         return "trade/list";
     }
 
@@ -29,26 +40,52 @@ public class TradeController {
 
     @PostMapping("/trade/validate")
     public String validate(@Valid Trade trade, BindingResult result, Model model) {
-        // TODO: check data valid and save to db, after saving return Trade list
+        if (!result.hasErrors()) {
+            iTradeService.addTrade(trade);
+            logger.debug("New trade save to db: {}", trade);
+            model.addAttribute("trades", iTradeService.getAllTrades());
+            return "redirect:/trade/list";
+        }
         return "trade/add";
     }
 
     @GetMapping("/trade/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-        // TODO: get Trade by Id and to model then show to the form
-        return "trade/update";
+        try {
+            Trade trade = iTradeService.getTradeById(id);
+            logger.debug("Get trade id: {} from db", trade.getTradeId());
+            model.addAttribute("trade", trade);
+            return "trade/update";
+        } catch (NonExistantTradeException e) {
+            logger.error("Try to update non-existent trade id: " + id + " with URL input");
+            return "redirect:/trade/list";
+        }
     }
 
     @PostMapping("/trade/update/{id}")
     public String updateTrade(@PathVariable("id") Integer id, @Valid Trade trade,
                              BindingResult result, Model model) {
-        // TODO: check required fields, if valid call service to update Trade and return Trade list
+        if (result.hasErrors()) {
+            return "trade/update";
+        }
+
+        trade.setTradeId(id);
+        iTradeService.updateTrade(trade);
+        logger.debug("Update {} infos to db", trade);
+        model.addAttribute("trades", iTradeService.getAllTrades());
         return "redirect:/trade/list";
     }
 
     @GetMapping("/trade/delete/{id}")
     public String deleteTrade(@PathVariable("id") Integer id, Model model) {
-        // TODO: Find Trade by Id and delete the Trade, return to Trade list
+        try {
+            Trade trade = iTradeService.getTradeById(id);
+            logger.debug("Get trade id: {} from db", trade.getTradeId());
+            iTradeService.deleteTrade(trade);
+            logger.debug("Delete {} from db", trade);
+        } catch (NonExistantTradeException e) {
+            logger.error("Try to delete non-existent trade id: " + id + " with URL input");
+        }
         return "redirect:/trade/list";
     }
 }
