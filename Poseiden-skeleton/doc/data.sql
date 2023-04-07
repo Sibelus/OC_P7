@@ -122,3 +122,11 @@ CREATE TABLE Users (
 -- DATA INSERTION
 insert into Users(fullname, username, password, role) values("Administrator", "admin", "$2a$12$Beq87685j.HoBHddmHqJoud17DBTBKuXJZQ0X2scsQK2vulNKTwZC", "ADMIN");
 insert into Users(fullname, username, password, role) values("User", "user", "$2a$12$sVreX1us4JExny39Akqbyu7sW2e0JENCIv22F/As1.n2ezKsapQJK", "USER");
+
+-- insertions for integration testing
+insert into Users(fullname, username, password, role, Id) values("Test", "test", "$2a$10$yW7G5VoeyF9JN1Fg4QwGgeDko1GuNWaaeTBwai01BM8YoXp1qaX56", "USER", 100);
+insert into BidList(BidListId, account, type, bidQuantity, askQuantity, bid, ask, benchmark) values(100, "test account", "test type", 10, 0, 0, 0, 0);
+insert into CurvePoint(Id, CurveId, term, value) values(100, 10, 10, 10);
+insert into Rating(Id, moodysRating, sandPRating, fitchRating, orderNumber) values(100, "test moodysRating", "test sandPRating", "test fitchRating", 42);
+insert into RuleName(Id, name, description, json, template, sqlStr, sqlPart) values(100, "test name", "test description", "test json", "test template", "test sqlStr", "test sqlPart");
+insert into Trade(TradeId, account, type, buyQuantity, sellQuantity, buyPrice, sellPrice) values(100, "test account", "test type", 42, 0, 0, 0);
