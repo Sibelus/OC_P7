@@ -15,7 +15,7 @@ public class BidListService implements IBidListService {
 
     @Autowired
     private BidListRepository bidListRepository;
-    Logger logger  = LoggerFactory.getLogger(UserService.class);
+    Logger logger  = LoggerFactory.getLogger(BidListService.class);
 
 
     @Override
