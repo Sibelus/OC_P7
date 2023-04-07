@@ -13,9 +13,11 @@ public class Trade {
     @Column(name = "TradeId")
     private int tradeId;
 
+    @NotBlank(message = "Account is mandatory")
     @Column(name = "account")
     private String account;
 
+    @NotBlank(message = "Type is mandatory")
     @Column(name = "type")
     private String type;
 
