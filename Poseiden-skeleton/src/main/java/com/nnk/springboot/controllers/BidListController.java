@@ -82,9 +82,10 @@ public class BidListController {
             logger.debug("Get bidList id: {} from db", bidList.getBidListId());
             iBidListService.deleteBidlist(bidList);
             logger.debug("Delete {} from db", bidList);
+            return "redirect:/bidList/list";
         } catch (NonExistantBidlistException e) {
             logger.error("Try to delete non-existent bidList id: " + id + " with URL input");
+            return "redirect:/app/error";
         }
-        return "redirect:/bidList/list";
     }
 }

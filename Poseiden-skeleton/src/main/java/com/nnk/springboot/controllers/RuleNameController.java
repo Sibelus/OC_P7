@@ -65,7 +65,7 @@ public class RuleNameController {
     public String updateRuleName(@PathVariable("id") Integer id, @Valid RuleName ruleName,
                              BindingResult result, Model model) {
         if (result.hasErrors()) {
-            return "rating/update";
+            return "ruleName/update";
         }
 
         ruleName.setId(id);
@@ -82,9 +82,10 @@ public class RuleNameController {
             logger.debug("Get ruleName id: {} from db", ruleName.getId());
             iRuleNameService.deleteRuleName(ruleName);
             logger.debug("Delete {} from db", ruleName);
+            return "redirect:/ruleName/list";
         } catch (NonExistantRuleNameException e) {
             logger.error("Try to delete non-existent ruleName id: " + id + " with URL input");
+            return "redirect:/app/error";
         }
-        return "redirect:/ruleName/list";
     }
 }

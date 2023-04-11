@@ -83,9 +83,10 @@ public class TradeController {
             logger.debug("Get trade id: {} from db", trade.getTradeId());
             iTradeService.deleteTrade(trade);
             logger.debug("Delete {} from db", trade);
+            return "redirect:/trade/list";
         } catch (NonExistantTradeException e) {
             logger.error("Try to delete non-existent trade id: " + id + " with URL input");
+            return "redirect:/app/error";
         }
-        return "redirect:/trade/list";
     }
 }

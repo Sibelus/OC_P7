@@ -78,9 +78,10 @@ public class UserController {
         try {
             User user = iUserService.getUserById(id);
             iUserService.deleteUser(user);
+            return "redirect:/user/list";
         } catch (NonExistantUserException e) {
             logger.error("Try to delete non-existent user id: " + id + " with URL input");
+            return "redirect:/app/error";
         }
-        return "redirect:/user/list";
     }
 }

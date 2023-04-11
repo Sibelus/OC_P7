@@ -80,9 +80,10 @@ public class CurveController {
             logger.debug("Get curvePoint id: {} from db", curvePoint.getId());
             iCurvePointService.deleteCurvePoint(curvePoint);
             logger.debug("Delete {} from db", curvePoint);
+            return "redirect:/curvePoint/list";
         } catch (NonExistantCurvePointException e) {
             logger.error("Try to delete non-existent curvePoint id: " + id + " with URL input");
+            return "redirect:/app/error";
         }
-        return "redirect:/curvePoint/list";
     }
 }

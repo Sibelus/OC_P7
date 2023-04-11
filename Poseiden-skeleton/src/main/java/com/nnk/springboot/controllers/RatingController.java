@@ -82,9 +82,10 @@ public class RatingController {
             logger.debug("Get bidList id: {} from db", rating.getId());
             iRatingService.deleteRating(rating);
             logger.debug("Delete {} from db", rating);
+            return "redirect:/rating/list";
         } catch (NonExistantRatingException e) {
             logger.error("Try to delete non-existent rating id: " + id + " with URL input");
+            return "redirect:/app/error";
         }
-        return "redirect:/rating/list";
     }
 }
