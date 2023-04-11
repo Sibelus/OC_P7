@@ -38,7 +38,7 @@ public class BidListControllerTest {
 
 
     /* ------- home() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testGetHome() throws Exception {
         mockMvc.perform(get("/bidList/list")).andExpect(status().isOk());
@@ -46,7 +46,7 @@ public class BidListControllerTest {
 
 
     /* ------- addBidForm() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testGetAddBidForm() throws Exception {
         mockMvc.perform(get("/bidList/add")).andExpect(status().isOk());
@@ -54,7 +54,7 @@ public class BidListControllerTest {
 
 
     /* ------- validate() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostValidate() throws Exception {
         mockMvc.perform(post("/bidList/validate")
@@ -66,7 +66,7 @@ public class BidListControllerTest {
                 .andExpect(header().string("Location", "/bidList/list"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostValidate_WithEmptyAccount() throws Exception {
         mockMvc.perform(post("/bidList/validate")
@@ -76,7 +76,7 @@ public class BidListControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("bidList", "account", "NotBlank"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostValidate_WithEmptyType() throws Exception {
         mockMvc.perform(post("/bidList/validate")
@@ -87,7 +87,7 @@ public class BidListControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("bidList", "type", "NotBlank"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostValidate_WithEmptyBidQuantity() throws Exception {
         mockMvc.perform(post("/bidList/validate")
@@ -99,7 +99,7 @@ public class BidListControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("bidList", "bidQuantity", "typeMismatch"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostValidate_WithLettersBidQuantity() throws Exception {
         mockMvc.perform(post("/bidList/validate")
@@ -113,23 +113,23 @@ public class BidListControllerTest {
 
 
     /* ------- showUpdateForm() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testGetshowUpdateForm() throws Exception {
         mockMvc.perform(get("/bidList/update/100")).andExpect(status().isOk());
     }
 
-    /*
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testGetshowUpdateForm_InvalidBidListId() throws Exception {
-        mockMvc.perform(get("/bidList/update/101")).andExpect(status().is5xxServerError());
-        //mockMvc.perform(get("/bidList/update/101")).andExpect(result -> assertTrue(result.getResolvedException() instanceof IllegalArgumentException));
-    }*/
+        mockMvc.perform(get("/bidList/update/1001"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().string("Location", "/app/error"));
+    }
 
 
     /* ------- updateBid() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostUpdateBid() throws Exception {
         mockMvc.perform(post("/bidList/update/100")
@@ -141,7 +141,7 @@ public class BidListControllerTest {
                 .andExpect(header().string("Location", "/bidList/list"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostUpdateBid_WithEmptyAccount() throws Exception {
         mockMvc.perform(post("/bidList/update/100")
@@ -151,7 +151,7 @@ public class BidListControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("bidList", "account", "NotBlank"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostUpdateBid_WithEmptyType() throws Exception {
         mockMvc.perform(post("/bidList/update/100")
@@ -162,7 +162,7 @@ public class BidListControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("bidList", "type", "NotBlank"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostUpdateBid_WithEmptyBidQuantity() throws Exception {
         mockMvc.perform(post("/bidList/update/100")
@@ -174,7 +174,7 @@ public class BidListControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("bidList", "bidQuantity", "typeMismatch"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostUpdateBid_WithLettersBidQuantity() throws Exception {
         mockMvc.perform(post("/bidList/update/100")
@@ -188,11 +188,19 @@ public class BidListControllerTest {
 
 
     /* ------- deleteBid() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testGetDeleteBid() throws Exception {
         mockMvc.perform(get("/bidList/delete/100"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(header().string("Location", "/bidList/list"));
+    }
+
+    @WithMockUser(value = "user", authorities = "USER")
+    @Test
+    public void testGetDelete_InvalidBidListId() throws Exception {
+        mockMvc.perform(get("/bidList/delete/1001"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().string("Location", "/app/error"));
     }
 }

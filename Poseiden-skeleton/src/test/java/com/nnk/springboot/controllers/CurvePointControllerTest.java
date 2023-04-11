@@ -38,7 +38,7 @@ public class CurvePointControllerTest {
 
 
     /* ------- home() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testGetHome() throws Exception {
         mockMvc.perform(get("/curvePoint/list")).andExpect(status().isOk());
@@ -46,7 +46,7 @@ public class CurvePointControllerTest {
 
 
     /* ------- addBidForm() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testGetAddBidForm() throws Exception {
         mockMvc.perform(get("/curvePoint/add")).andExpect(status().isOk());
@@ -54,7 +54,7 @@ public class CurvePointControllerTest {
 
 
     /* ------- validate() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostValidate() throws Exception {
         mockMvc.perform(post("/curvePoint/validate")
@@ -66,7 +66,7 @@ public class CurvePointControllerTest {
                 .andExpect(header().string("Location", "/curvePoint/list"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostValidate_WithEmptyCurveId() throws Exception {
         mockMvc.perform(post("/curvePoint/validate")
@@ -76,7 +76,7 @@ public class CurvePointControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("curvePoint", "curveId", "typeMismatch"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostValidate_WithLetterCurveId() throws Exception {
         mockMvc.perform(post("/curvePoint/validate")
@@ -86,7 +86,7 @@ public class CurvePointControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("curvePoint", "curveId", "typeMismatch"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostValidate_WithEmptyTerm() throws Exception {
         mockMvc.perform(post("/curvePoint/validate")
@@ -97,7 +97,7 @@ public class CurvePointControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("curvePoint", "term", "typeMismatch"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostValidate_WithLetterTerm() throws Exception {
         mockMvc.perform(post("/curvePoint/validate")
@@ -108,7 +108,7 @@ public class CurvePointControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("curvePoint", "term", "typeMismatch"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostValidate_WithEmptyValue() throws Exception {
         mockMvc.perform(post("/curvePoint/validate")
@@ -120,7 +120,7 @@ public class CurvePointControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("curvePoint", "value", "typeMismatch"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostValidate_WithLetteryValue() throws Exception {
         mockMvc.perform(post("/curvePoint/validate")
@@ -134,15 +134,22 @@ public class CurvePointControllerTest {
 
 
     /* ------- showUpdateForm() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testGetshowUpdateForm() throws Exception {
         mockMvc.perform(get("/curvePoint/update/100")).andExpect(status().isOk());
     }
 
+    @WithMockUser(value = "user", authorities = "USER")
+    @Test
+    public void testGetshowUpdateForm_InvalidCurvePointId() throws Exception {
+        mockMvc.perform(get("/curvePoint/update/1001"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().string("Location", "/app/error"));
+    }
 
     /* ------- updateCurvePoint() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostUpdateCurvePoint() throws Exception {
         mockMvc.perform(post("/curvePoint/update/100")
@@ -154,7 +161,7 @@ public class CurvePointControllerTest {
                 .andExpect(header().string("Location", "/curvePoint/list"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostUpdateCurvePoint_WithEmptyCurveId() throws Exception {
         mockMvc.perform(post("/curvePoint/update/100")
@@ -164,7 +171,7 @@ public class CurvePointControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("curvePoint", "curveId", "typeMismatch"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostUpdateCurvePoint_WithLetterCurveId() throws Exception {
         mockMvc.perform(post("/curvePoint/update/100")
@@ -174,7 +181,7 @@ public class CurvePointControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("curvePoint", "curveId", "typeMismatch"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostUpdateCurvePoint_WithEmptyTerm() throws Exception {
         mockMvc.perform(post("/curvePoint/update/100")
@@ -185,7 +192,7 @@ public class CurvePointControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("curvePoint", "term", "typeMismatch"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostUpdateCurvePoint_WithLetterTerm() throws Exception {
         mockMvc.perform(post("/curvePoint/update/100")
@@ -196,7 +203,7 @@ public class CurvePointControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("curvePoint", "term", "typeMismatch"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostUpdateCurvePoint_WithEmptyValue() throws Exception {
         mockMvc.perform(post("/curvePoint/update/100")
@@ -208,7 +215,7 @@ public class CurvePointControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("curvePoint", "value", "typeMismatch"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostUpdateCurvePoint_WithLetterValue() throws Exception {
         mockMvc.perform(post("/curvePoint/update/100")
@@ -222,11 +229,19 @@ public class CurvePointControllerTest {
 
 
     /* ------- deleteBid() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testGetDeleteBid() throws Exception {
         mockMvc.perform(get("/curvePoint/delete/100"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(header().string("Location", "/curvePoint/list"));
+    }
+
+    @WithMockUser(value = "user", authorities = "USER")
+    @Test
+    public void testGetDeleteBid_InvalidCurvePointId() throws Exception {
+        mockMvc.perform(get("/curvePoint/delete/1001"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().string("Location", "/app/error"));
     }
 }

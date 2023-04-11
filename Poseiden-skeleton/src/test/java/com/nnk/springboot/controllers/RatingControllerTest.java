@@ -38,7 +38,7 @@ public class RatingControllerTest {
 
 
     /* ------- home() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testGetHome() throws Exception {
         mockMvc.perform(get("/rating/list")).andExpect(status().isOk());
@@ -46,7 +46,7 @@ public class RatingControllerTest {
 
 
     /* ------- addRatingForm() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testGetAddRatingForm() throws Exception {
         mockMvc.perform(get("/rating/add")).andExpect(status().isOk());
@@ -54,7 +54,7 @@ public class RatingControllerTest {
 
 
     /* ------- validate() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostValidate() throws Exception {
         mockMvc.perform(post("/rating/validate")
@@ -67,20 +67,23 @@ public class RatingControllerTest {
                 .andExpect(header().string("Location", "/rating/list"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
-    public void testPostValidate_WithEmptyOrderNumber() throws Exception {
+    public void testPostValidate_WithEmptyFields() throws Exception {
         mockMvc.perform(post("/rating/validate")
-                        .param("moodysRating", "moodysRating")
-                        .param("sandPRating", "sandPRating")
-                        .param("fitchRating", "fitchRating")
+                        .param("moodysRating", "")
+                        .param("sandPRating", "")
+                        .param("fitchRating", "")
                         .param("orderNumber", "")
                         .with(csrf()))
                 .andExpect(status().is2xxSuccessful())
+                .andExpect(model().attributeHasFieldErrorCode("rating", "moodysRating", "NotBlank"))
+                .andExpect(model().attributeHasFieldErrorCode("rating", "sandPRating", "NotBlank"))
+                .andExpect(model().attributeHasFieldErrorCode("rating", "fitchRating", "NotBlank"))
                 .andExpect(model().attributeHasFieldErrorCode("rating", "orderNumber", "typeMismatch"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostValidate_WithLetterOrderNumber() throws Exception {
         mockMvc.perform(post("/rating/validate")
@@ -95,15 +98,23 @@ public class RatingControllerTest {
 
 
     /* ------- showUpdateForm() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testGetshowUpdateForm() throws Exception {
         mockMvc.perform(get("/rating/update/100")).andExpect(status().isOk());
     }
 
+    @WithMockUser(value = "user", authorities = "USER")
+    @Test
+    public void testGetshowUpdateForm_InvalidRatingId() throws Exception {
+        mockMvc.perform(get("/rating/update/1001"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().string("Location", "/app/error"));
+    }
+
 
     /* ------- updateRating() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostUpdateRating() throws Exception {
         mockMvc.perform(post("/rating/update/100")
@@ -116,20 +127,23 @@ public class RatingControllerTest {
                 .andExpect(header().string("Location", "/rating/list"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
-    public void testPostUpdateRating_WithEmptyOrderNumber() throws Exception {
+    public void testPostUpdateRating_WithEmptyFields() throws Exception {
         mockMvc.perform(post("/rating/update/100")
-                        .param("moodysRating", "moodysRating")
-                        .param("sandPRating", "sandPRating")
-                        .param("fitchRating", "fitchRating")
+                        .param("moodysRating", "")
+                        .param("sandPRating", "")
+                        .param("fitchRating", "")
                         .param("orderNumber", "")
                         .with(csrf()))
                 .andExpect(status().is2xxSuccessful())
+                .andExpect(model().attributeHasFieldErrorCode("rating", "moodysRating", "NotBlank"))
+                .andExpect(model().attributeHasFieldErrorCode("rating", "sandPRating", "NotBlank"))
+                .andExpect(model().attributeHasFieldErrorCode("rating", "fitchRating", "NotBlank"))
                 .andExpect(model().attributeHasFieldErrorCode("rating", "orderNumber", "typeMismatch"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostUpdateRating_WithLetterOrderNumber() throws Exception {
         mockMvc.perform(post("/rating/update/100")
@@ -144,11 +158,19 @@ public class RatingControllerTest {
 
 
     /* ------- deleteBid() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testGetDeleteRating() throws Exception {
         mockMvc.perform(get("/rating/delete/100"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(header().string("Location", "/rating/list"));
+    }
+
+    @WithMockUser(value = "user", authorities = "USER")
+    @Test
+    public void testGetDelete_InvalidRatingId() throws Exception {
+        mockMvc.perform(get("/rating/delete/1001"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().string("Location", "/app/error"));
     }
 }

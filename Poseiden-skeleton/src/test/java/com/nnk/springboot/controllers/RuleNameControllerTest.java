@@ -17,8 +17,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Transactional
 @SpringBootTest
@@ -39,7 +38,7 @@ public class RuleNameControllerTest {
 
 
     /* ------- home() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testGetHome() throws Exception {
         mockMvc.perform(get("/ruleName/list")).andExpect(status().isOk());
@@ -47,7 +46,7 @@ public class RuleNameControllerTest {
 
 
     /* ------- addRatingForm() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testGetAddRatingForm() throws Exception {
         mockMvc.perform(get("/ruleName/add")).andExpect(status().isOk());
@@ -55,7 +54,7 @@ public class RuleNameControllerTest {
 
 
     /* ------- validate() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostValidate() throws Exception {
         mockMvc.perform(post("/ruleName/validate")
@@ -70,36 +69,94 @@ public class RuleNameControllerTest {
                 .andExpect(header().string("Location", "/ruleName/list"));
     }
 
+    @WithMockUser(value = "user", authorities = "USER")
+    @Test
+    public void testPostValidate_WithEmptyFields() throws Exception {
+        mockMvc.perform(post("/ruleName/validate")
+                        .param("name", "")
+                        .param("description", "")
+                        .param("json", "")
+                        .param("template", "")
+                        .param("sqlStr", "")
+                        .param("sqlPart", "")
+                        .with(csrf()))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(model().attributeHasFieldErrorCode("ruleName", "name", "NotBlank"))
+                .andExpect(model().attributeHasFieldErrorCode("ruleName", "description", "NotBlank"))
+                .andExpect(model().attributeHasFieldErrorCode("ruleName", "json", "NotBlank"))
+                .andExpect(model().attributeHasFieldErrorCode("ruleName", "template", "NotBlank"))
+                .andExpect(model().attributeHasFieldErrorCode("ruleName", "sqlStr", "NotBlank"))
+                .andExpect(model().attributeHasFieldErrorCode("ruleName", "sqlPart", "NotBlank"));
+    }
+
 
     /* ------- showUpdateForm() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testGetshowUpdateForm() throws Exception {
         mockMvc.perform(get("/ruleName/update/100")).andExpect(status().isOk());
     }
 
+    @WithMockUser(value = "user", authorities = "USER")
+    @Test
+    public void testGetshowUpdateForm_InvalidRuleNameId() throws Exception {
+        mockMvc.perform(get("/ruleName/update/1001"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().string("Location", "/app/error"));
+    }
+
 
     /* ------- updateRuleName() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostUpdateRuleName() throws Exception {
         mockMvc.perform(post("/ruleName/update/100")
-                        .param("moodysRating", "moodysRating")
-                        .param("sandPRating", "sandPRating")
-                        .param("fitchRating", "fitchRating")
-                        .param("orderNumber", "42")
+                        .param("name", "name")
+                        .param("description", "description")
+                        .param("json", "json")
+                        .param("template", "template")
+                        .param("sqlStr", "sqlStr")
+                        .param("sqlPart", "sqlPart")
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(header().string("Location", "/ruleName/list"));
     }
 
+    @WithMockUser(value = "user", authorities = "USER")
+    @Test
+    public void testPostUpdateRuleName_WithEmptyFields() throws Exception {
+        mockMvc.perform(post("/ruleName/update/100")
+                        .param("name", "")
+                        .param("description", "")
+                        .param("json", "")
+                        .param("template", "")
+                        .param("sqlStr", "")
+                        .param("sqlPart", "")
+                        .with(csrf()))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(model().attributeHasFieldErrorCode("ruleName", "name", "NotBlank"))
+                .andExpect(model().attributeHasFieldErrorCode("ruleName", "description", "NotBlank"))
+                .andExpect(model().attributeHasFieldErrorCode("ruleName", "json", "NotBlank"))
+                .andExpect(model().attributeHasFieldErrorCode("ruleName", "template", "NotBlank"))
+                .andExpect(model().attributeHasFieldErrorCode("ruleName", "sqlStr", "NotBlank"))
+                .andExpect(model().attributeHasFieldErrorCode("ruleName", "sqlPart", "NotBlank"));
+    }
+
 
     /* ------- deleteRuleName() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testGetDeleteRuleName() throws Exception {
         mockMvc.perform(get("/ruleName/delete/100"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(header().string("Location", "/ruleName/list"));
+    }
+
+    @WithMockUser(value = "user", authorities = "USER")
+    @Test
+    public void testGetDelete_InvalidRuleNameId() throws Exception {
+        mockMvc.perform(get("/ruleName/delete/1001"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().string("Location", "/app/error"));
     }
 }

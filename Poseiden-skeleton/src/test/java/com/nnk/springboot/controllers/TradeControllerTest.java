@@ -38,7 +38,7 @@ public class TradeControllerTest {
 
 
     /* ------- home() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testGetHome() throws Exception {
         mockMvc.perform(get("/trade/list")).andExpect(status().isOk());
@@ -46,7 +46,7 @@ public class TradeControllerTest {
 
 
     /* ------- addBidForm() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testGetAddBidForm() throws Exception {
         mockMvc.perform(get("/trade/add")).andExpect(status().isOk());
@@ -54,7 +54,7 @@ public class TradeControllerTest {
 
 
     /* ------- validate() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostValidate() throws Exception {
         mockMvc.perform(post("/trade/validate")
@@ -66,7 +66,7 @@ public class TradeControllerTest {
                 .andExpect(header().string("Location", "/trade/list"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostValidate_WithEmptyAccount() throws Exception {
         mockMvc.perform(post("/trade/validate")
@@ -76,7 +76,7 @@ public class TradeControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("trade", "account", "NotBlank"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostValidate_WithEmptyType() throws Exception {
         mockMvc.perform(post("/trade/validate")
@@ -87,7 +87,7 @@ public class TradeControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("trade", "type", "NotBlank"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostValidate_WithEmptyBuyQuantity() throws Exception {
         mockMvc.perform(post("/trade/validate")
@@ -99,7 +99,7 @@ public class TradeControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("trade", "buyQuantity", "typeMismatch"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostValidate_WithLetterBuyQuantity() throws Exception {
         mockMvc.perform(post("/trade/validate")
@@ -113,15 +113,23 @@ public class TradeControllerTest {
 
 
     /* ------- showUpdateForm() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testGetshowUpdateForm() throws Exception {
         mockMvc.perform(get("/trade/update/100")).andExpect(status().isOk());
     }
 
+    @WithMockUser(value = "user", authorities = "USER")
+    @Test
+    public void testGetshowUpdateForm_InvalidTradeId() throws Exception {
+        mockMvc.perform(get("/trade/update/1001"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().string("Location", "/app/error"));
+    }
+
 
     /* ------- updateTrade() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostUpdateTrade() throws Exception {
         mockMvc.perform(post("/trade/update/100")
@@ -133,7 +141,7 @@ public class TradeControllerTest {
                 .andExpect(header().string("Location", "/trade/list"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostUpdateTrade_WithEmptyAccount() throws Exception {
         mockMvc.perform(post("/trade/update/100")
@@ -143,7 +151,7 @@ public class TradeControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("trade", "account", "NotBlank"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostUpdateTrade_WithEmptyType() throws Exception {
         mockMvc.perform(post("/trade/update/100")
@@ -154,7 +162,7 @@ public class TradeControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("trade", "type", "NotBlank"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostUpdateTrade_WithEmptyBuyQuantity() throws Exception {
         mockMvc.perform(post("/trade/update/100")
@@ -166,7 +174,7 @@ public class TradeControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("trade", "buyQuantity", "typeMismatch"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testPostUpdateTrade_WithLetterBuyQuantity() throws Exception {
         mockMvc.perform(post("/trade/update/100")
@@ -180,11 +188,19 @@ public class TradeControllerTest {
 
 
     /* ------- deleteTrade() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "user", authorities = "USER")
     @Test
     public void testGetDeleteBid() throws Exception {
         mockMvc.perform(get("/trade/delete/100"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(header().string("Location", "/trade/list"));
+    }
+
+    @WithMockUser(value = "user", authorities = "USER")
+    @Test
+    public void testGetDelete_InvalidTradeId() throws Exception {
+        mockMvc.perform(get("/trade/delete/1001"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().string("Location", "/app/error"));
     }
 }
