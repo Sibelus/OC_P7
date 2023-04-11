@@ -38,35 +38,50 @@ public class UserControllerTest {
 
 
     /* ------- home() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(username = "admin", password = "admin", authorities = "ADMIN")
     @Test
     public void testGetHome() throws Exception {
         mockMvc.perform(get("/user/list")).andExpect(status().isOk());
     }
 
+    @WithMockUser(username = "user", password = "user", authorities = "USER")
+    @Test
+    public void testGetHome_WithWrongUserAuthorities() throws Exception {
+        mockMvc.perform(get("/user/list"))
+                .andExpect(status().is4xxClientError());
+    }
+
 
     /* ------- addUser() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(username = "admin", password = "admin", authorities = "ADMIN")
     @Test
     public void testGetAddUser() throws Exception {
         mockMvc.perform(get("/user/add")).andExpect(status().isOk());
     }
 
+    @WithMockUser(username = "user", password = "user", authorities = "USER")
+    @Test
+    public void testGetAddUser_WithWrongUserAuthorities() throws Exception {
+        mockMvc.perform(get("/user/add"))
+                .andExpect(status().is4xxClientError());
+    }
+
 
     /* ------- validate() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(username = "admin", password = "admin", authorities = "ADMIN")
     @Test
     public void testPostValidate() throws Exception {
         mockMvc.perform(post("/user/validate")
                         .param("fullname", "fullname")
                         .param("username", "username")
-                        .param("password", "Password123")
+                        .param("password", "Password123%")
                         .param("role", "ADMIN")
                         .with(csrf()))
-                .andExpect(status().is2xxSuccessful());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().string("Location", "/user/list"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(username = "admin", password = "admin", authorities = "ADMIN")
     @Test
     public void testPostValidate_WithEmptyFullname() throws Exception {
         mockMvc.perform(post("/user/validate")
@@ -76,7 +91,7 @@ public class UserControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("user", "fullname", "NotBlank"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(username = "admin", password = "admin", authorities = "ADMIN")
     @Test
     public void testPostValidate_WithEmptyUsername() throws Exception {
         mockMvc.perform(post("/user/validate")
@@ -88,7 +103,7 @@ public class UserControllerTest {
     }
 
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(username = "admin", password = "admin", authorities = "ADMIN")
     @Test
     public void testPostValidate_WithEmptyPassword() throws Exception {
         mockMvc.perform(post("/user/validate")
@@ -100,7 +115,7 @@ public class UserControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("user", "password", "Pattern"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(username = "admin", password = "admin", authorities = "ADMIN")
     @Test
     public void testPostValidate_WithPasswordWithoutSpecialchar() throws Exception {
         mockMvc.perform(post("/user/validate")
@@ -112,7 +127,7 @@ public class UserControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("user", "password", "Pattern"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(username = "admin", password = "admin", authorities = "ADMIN")
     @Test
     public void testPostValidate_WithPasswordWithoutUpperCase() throws Exception {
         mockMvc.perform(post("/user/validate")
@@ -124,7 +139,7 @@ public class UserControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("user", "password", "Pattern"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(username = "admin", password = "admin", authorities = "ADMIN")
     @Test
     public void testPostValidate_WithPasswordWithoutNumber() throws Exception {
         mockMvc.perform(post("/user/validate")
@@ -136,7 +151,7 @@ public class UserControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("user", "password", "Pattern"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(username = "admin", password = "admin", authorities = "ADMIN")
     @Test
     public void testPostValidate_WithPasswordWithoutCorrectLength() throws Exception {
         mockMvc.perform(post("/user/validate")
@@ -148,7 +163,7 @@ public class UserControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("user", "password", "Pattern"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(username = "admin", password = "admin", authorities = "ADMIN")
     @Test
     public void testPostValidate_WithEmptyRole() throws Exception {
         mockMvc.perform(post("/user/validate")
@@ -163,27 +178,43 @@ public class UserControllerTest {
 
 
     /* ------- showUpdateForm() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(username = "admin", password = "admin", authorities = "ADMIN")
     @Test
     public void testGetShowUpdateForm() throws Exception {
         mockMvc.perform(get("/user/update/100")).andExpect(status().isOk());
     }
 
+    @WithMockUser(username = "user", password = "user", authorities = "USER")
+    @Test
+    public void testGetShowUpdateForm_WithWrongUserAuthorities() throws Exception {
+        mockMvc.perform(get("/user/update/100"))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @WithMockUser(username = "admin", password = "admin", authorities = "ADMIN")
+    @Test
+    public void testGetshowUpdateForm_InvalidUserId() throws Exception {
+        mockMvc.perform(get("/user/update/1001"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().string("Location", "/app/error"));
+    }
+
 
     /* ------- updateUser() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(username = "admin", password = "admin", authorities = "ADMIN")
     @Test
     public void testPostUpdateUser() throws Exception {
         mockMvc.perform(post("/user/update/100")
                         .param("fullname", "fullname")
                         .param("username", "username")
-                        .param("password", "Password123")
+                        .param("password", "Password123%")
                         .param("role", "ADMIN")
                         .with(csrf()))
-                .andExpect(status().is2xxSuccessful());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().string("Location", "/user/list"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(username = "admin", password = "admin", authorities = "ADMIN")
     @Test
     public void testPostUpdateUser_WithEmptyFullname() throws Exception {
         mockMvc.perform(post("/user/update/100")
@@ -193,7 +224,7 @@ public class UserControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("user", "fullname", "NotBlank"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(username = "admin", password = "admin", authorities = "ADMIN")
     @Test
     public void testPostUpdateUser_WithEmptyUsername() throws Exception {
         mockMvc.perform(post("/user/update/100")
@@ -205,7 +236,7 @@ public class UserControllerTest {
     }
 
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(username = "admin", password = "admin", authorities = "ADMIN")
     @Test
     public void testPostUpdateUser_WithEmptyPassword() throws Exception {
         mockMvc.perform(post("/user/update/100")
@@ -217,7 +248,7 @@ public class UserControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("user", "password", "Pattern"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(username = "admin", password = "admin", authorities = "ADMIN")
     @Test
     public void testPostUpdateUser_WithPasswordWithoutSpecialchar() throws Exception {
         mockMvc.perform(post("/user/update/100")
@@ -229,7 +260,7 @@ public class UserControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("user", "password", "Pattern"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(username = "admin", password = "admin", authorities = "ADMIN")
     @Test
     public void testPostUpdateUser_WithPasswordWithoutUpperCase() throws Exception {
         mockMvc.perform(post("/user/update/100")
@@ -241,7 +272,7 @@ public class UserControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("user", "password", "Pattern"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(username = "admin", password = "admin", authorities = "ADMIN")
     @Test
     public void testPostUpdateUser_WithPasswordWithoutNumber() throws Exception {
         mockMvc.perform(post("/user/update/100")
@@ -253,7 +284,7 @@ public class UserControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("user", "password", "Pattern"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(username = "admin", password = "admin", authorities = "ADMIN")
     @Test
     public void testPostUpdateUser_WithPasswordWithoutCorrectLength() throws Exception {
         mockMvc.perform(post("/user/update/100")
@@ -265,7 +296,7 @@ public class UserControllerTest {
                 .andExpect(model().attributeHasFieldErrorCode("user", "password", "Pattern"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(username = "admin", password = "admin", authorities = "ADMIN")
     @Test
     public void testPostUpdateUser_WithEmptyRole() throws Exception {
         mockMvc.perform(post("/user/update/100")
@@ -280,11 +311,26 @@ public class UserControllerTest {
 
 
     /* ------- deleteUser() ------- */
-    @WithMockUser(value = "admin")
+    @WithMockUser(username = "admin", password = "admin", authorities = "ADMIN")
     @Test
     public void testGetDeleteUser() throws Exception {
         mockMvc.perform(get("/user/delete/100"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(header().string("Location", "/user/list"));
+    }
+
+    @WithMockUser(username = "admin", password = "admin", authorities = "ADMIN")
+    @Test
+    public void testGetDelete_InvalidUserId() throws Exception {
+        mockMvc.perform(get("/user/delete/1001"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().string("Location", "/app/error"));
+    }
+
+    @WithMockUser(username = "user", password = "user", authorities = "USER")
+    @Test
+    public void testGetDeleteUser_WithWrongUserAuthorities() throws Exception {
+        mockMvc.perform(get("/user/delete/100"))
+                .andExpect(status().is4xxClientError());
     }
 }
