@@ -16,7 +16,7 @@ import static org.springframework.security.test.web.servlet.response.SecurityMoc
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -47,5 +47,24 @@ public class SecurityTest {
     @Test
     public void testUserLoginFailed_WithWrongPassword() throws Exception {
         mockMvc.perform(formLogin("/login").user("admin").password("wrongpassword")).andExpect(unauthenticated());
+    }
+
+    @Test
+    public void testUserLoginFailed_WithWrongUsername() throws Exception {
+        mockMvc.perform(formLogin("/login").user("wrongadmin").password("password")).andExpect(unauthenticated());
+    }
+
+    @Test
+    public void testUserLoginFailed_WithEmptyUsername() throws Exception {
+        mockMvc.perform(formLogin("/login").user("").password("password"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().string("Location", "/login?error"));
+    }
+
+    @Test
+    public void testUserLoginFailed_WithEmptyPassword() throws Exception {
+        mockMvc.perform(formLogin("/login").user("admin").password(""))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().string("Location", "/login?error"));
     }
 }
