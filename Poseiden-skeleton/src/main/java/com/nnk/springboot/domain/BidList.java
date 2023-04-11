@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 @Table(name = "bidlist")
 public class BidList {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "BidListId")
     private int BidListId;
 
