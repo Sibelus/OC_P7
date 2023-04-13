@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TradeService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-skeleton</a> &gt; <a href="index.source.html" class="el_package">com.nnk.springboot.service</a> &gt; <span class="el_source">TradeService.java</span></div><h1>TradeService.java</h1><pre class="source lang-java linenums">package com.nnk.springboot.service;
+
+import com.nnk.springboot.domain.Trade;
+import com.nnk.springboot.repositories.TradeRepository;
+import com.nnk.springboot.service.exceptions.NonExistantTradeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+<span class="fc" id="L14">public class TradeService implements ITradeService {</span>
+
+    @Autowired
+    private TradeRepository tradeRepository;
+<span class="fc" id="L18">    Logger logger  = LoggerFactory.getLogger(TradeService.class);</span>
+
+
+    @Override
+    public Trade getTradeById(int id) throws NonExistantTradeException {
+<span class="fc bfc" id="L23" title="All 2 branches covered.">        if (tradeRepository.existsById(id) == false) {</span>
+<span class="fc" id="L24">            throw new NonExistantTradeException(&quot;Trade id: &quot; + id + &quot; doesn't have a match in db&quot;);</span>
+        }
+<span class="fc" id="L26">        logger.debug(&quot;Get BidList with id: &quot; + id);</span>
+<span class="fc" id="L27">        Trade trade = tradeRepository.findById(id).get();</span>
+<span class="fc" id="L28">        return trade;</span>
+    }
+
+    @Override
+    public List&lt;Trade&gt; getAllTrades() {
+<span class="fc" id="L33">        logger.debug(&quot;Get all trades&quot;);</span>
+<span class="fc" id="L34">        List&lt;Trade&gt; trades = tradeRepository.findAll();</span>
+<span class="fc" id="L35">        return trades;</span>
+    }
+
+    @Override
+    public void addTrade(Trade trade) {
+<span class="fc" id="L40">        logger.debug(&quot;Save new trade&quot;);</span>
+<span class="fc" id="L41">        tradeRepository.save(trade);</span>
+<span class="fc" id="L42">    }</span>
+
+    @Override
+    public void updateTrade(Trade trade) {
+<span class="fc" id="L46">        logger.debug(&quot;Update new trade&quot;);</span>
+<span class="fc" id="L47">        tradeRepository.save(trade);</span>
+<span class="fc" id="L48">    }</span>
+
+    @Override
+    public void deleteTrade(Trade trade) {
+<span class="fc" id="L52">        logger.debug(&quot;Delete trade from db&quot;);</span>
+<span class="fc" id="L53">        tradeRepository.delete(trade);</span>
+<span class="fc" id="L54">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

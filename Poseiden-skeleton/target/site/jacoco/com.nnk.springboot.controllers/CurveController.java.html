@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CurveController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-skeleton</a> &gt; <a href="index.source.html" class="el_package">com.nnk.springboot.controllers</a> &gt; <span class="el_source">CurveController.java</span></div><h1>CurveController.java</h1><pre class="source lang-java linenums">package com.nnk.springboot.controllers;
+
+import com.nnk.springboot.domain.CurvePoint;
+import com.nnk.springboot.service.ICurvePointService;
+import com.nnk.springboot.service.exceptions.NonExistantCurvePointException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.validation.Valid;
+
+@Controller
+<span class="fc" id="L20">public class CurveController {</span>
+    @Autowired
+    private ICurvePointService iCurvePointService;
+<span class="fc" id="L23">    Logger logger = LoggerFactory.getLogger(CurveController.class);</span>
+
+    @RequestMapping(&quot;/curvePoint/list&quot;)
+    public String home(Model model)
+    {
+        // TODO: find all Curve Point, add to model
+<span class="fc" id="L29">        model.addAttribute(&quot;curvePoints&quot;, iCurvePointService.getAllCurvePoints());</span>
+<span class="fc" id="L30">        return &quot;curvePoint/list&quot;;</span>
+    }
+
+    @GetMapping(&quot;/curvePoint/add&quot;)
+    public String addBidForm(CurvePoint bid) {
+<span class="fc" id="L35">        return &quot;curvePoint/add&quot;;</span>
+    }
+
+    @PostMapping(&quot;/curvePoint/validate&quot;)
+    public String validate(@Valid CurvePoint curvePoint, BindingResult result, Model model) {
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (!result.hasErrors()) {</span>
+<span class="fc" id="L41">            iCurvePointService.addCurvePoint(curvePoint);</span>
+<span class="fc" id="L42">            logger.debug(&quot;New curvePoint save to db: {}&quot;, curvePoint);</span>
+<span class="fc" id="L43">            model.addAttribute(&quot;curvePoints&quot;, iCurvePointService.getAllCurvePoints());</span>
+<span class="fc" id="L44">            return &quot;redirect:/curvePoint/list&quot;;</span>
+        }
+<span class="fc" id="L46">        return &quot;curvePoint/add&quot;;</span>
+    }
+
+    @GetMapping(&quot;/curvePoint/update/{id}&quot;)
+    public String showUpdateForm(@PathVariable(&quot;id&quot;) Integer id, Model model) {
+        try {
+<span class="fc" id="L52">            CurvePoint curvePoint = iCurvePointService.getCurvePointById(id);</span>
+<span class="fc" id="L53">            logger.debug(&quot;Get curvePoint id: {} from db&quot;, curvePoint.getCurveId());</span>
+<span class="fc" id="L54">            model.addAttribute(&quot;curvePoint&quot;, curvePoint);</span>
+<span class="fc" id="L55">            return &quot;curvePoint/update&quot;;</span>
+<span class="fc" id="L56">        } catch (NonExistantCurvePointException e) {</span>
+<span class="fc" id="L57">            logger.error(&quot;Try to update non-existent curvePoint id: &quot; + id + &quot; with URL input&quot;);</span>
+<span class="fc" id="L58">            return &quot;redirect:/app/error&quot;;</span>
+        }
+    }
+
+    @PostMapping(&quot;/curvePoint/update/{id}&quot;)
+    public String updateCurvePoint(@PathVariable(&quot;id&quot;) Integer id, @Valid CurvePoint curvePoint,
+                                   BindingResult result, Model model) {
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (result.hasErrors()) {</span>
+<span class="fc" id="L66">            return &quot;curvePoint/update&quot;;</span>
+        }
+
+<span class="fc" id="L69">        curvePoint.setId(id);</span>
+<span class="fc" id="L70">        iCurvePointService.updateCurvePoint(curvePoint);</span>
+<span class="fc" id="L71">        logger.debug(&quot;Update {} infos to db&quot;, curvePoint);</span>
+<span class="fc" id="L72">        model.addAttribute(&quot;curvePoints&quot;, iCurvePointService.getAllCurvePoints());</span>
+<span class="fc" id="L73">        return &quot;redirect:/curvePoint/list&quot;;</span>
+    }
+
+    @GetMapping(&quot;/curvePoint/delete/{id}&quot;)
+    public String deleteBid(@PathVariable(&quot;id&quot;) Integer id, Model model) {
+        try {
+<span class="fc" id="L79">            CurvePoint curvePoint = iCurvePointService.getCurvePointById(id);</span>
+<span class="fc" id="L80">            logger.debug(&quot;Get curvePoint id: {} from db&quot;, curvePoint.getId());</span>
+<span class="fc" id="L81">            iCurvePointService.deleteCurvePoint(curvePoint);</span>
+<span class="fc" id="L82">            logger.debug(&quot;Delete {} from db&quot;, curvePoint);</span>
+<span class="fc" id="L83">            return &quot;redirect:/curvePoint/list&quot;;</span>
+<span class="fc" id="L84">        } catch (NonExistantCurvePointException e) {</span>
+<span class="fc" id="L85">            logger.error(&quot;Try to delete non-existent curvePoint id: &quot; + id + &quot; with URL input&quot;);</span>
+<span class="fc" id="L86">            return &quot;redirect:/app/error&quot;;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
