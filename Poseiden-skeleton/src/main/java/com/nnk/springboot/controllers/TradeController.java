@@ -1,9 +1,7 @@
 package com.nnk.springboot.controllers;
 
-import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.domain.Trade;
 import com.nnk.springboot.service.ITradeService;
-import com.nnk.springboot.service.exceptions.NonExistantBidlistException;
 import com.nnk.springboot.service.exceptions.NonExistantTradeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
