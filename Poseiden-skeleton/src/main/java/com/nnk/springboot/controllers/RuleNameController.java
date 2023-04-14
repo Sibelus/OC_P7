@@ -1,9 +1,7 @@
 package com.nnk.springboot.controllers;
 
-import com.nnk.springboot.domain.Rating;
 import com.nnk.springboot.domain.RuleName;
 import com.nnk.springboot.service.IRuleNameService;
-import com.nnk.springboot.service.exceptions.NonExistantRatingException;
 import com.nnk.springboot.service.exceptions.NonExistantRuleNameException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

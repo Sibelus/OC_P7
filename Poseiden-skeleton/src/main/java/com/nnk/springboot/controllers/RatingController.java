@@ -1,9 +1,7 @@
 package com.nnk.springboot.controllers;
 
-import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.domain.Rating;
 import com.nnk.springboot.service.IRatingService;
-import com.nnk.springboot.service.exceptions.NonExistantBidlistException;
 import com.nnk.springboot.service.exceptions.NonExistantRatingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
