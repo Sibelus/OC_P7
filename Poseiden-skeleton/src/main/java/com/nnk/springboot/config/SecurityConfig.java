@@ -25,6 +25,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService customUserDetailsService;
 
 
+    /**
+     * Method that manages the accesses of the different parts of the application
+     * The user management part is only accessible by an administrator with the authority "ADMIN"
+     * The financial part is only accessible by a user with the authority "USER"
+     * Except the login and the root part, all other parts of the application request an authentication session based
+     * @param http
+     * @throws Exception
+     */
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
@@ -38,16 +46,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().exceptionHandling().accessDeniedPage("/app/error");
     }
 
+    /**
+     * Method that add authentication based upon the custom AuthenticationProvider that is passed in
+     * @param auth
+     * @throws Exception
+     */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(authenticationProvider());
     }
 
+    /**
+     * Method for encrypting and decrypting information
+     * @return {@link PasswordEncoder}
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     *Method that return an authentication provider that uses CustomUserDetailsService & passwordEncoder
+     * @return {@link AuthenticationProvider}
+     */
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
