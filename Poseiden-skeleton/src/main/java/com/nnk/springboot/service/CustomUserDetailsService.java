@@ -17,6 +17,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     private UserRepository userRepository;
 
 
+    /**
+     * Method that search a user by his username into the database
+     * -> If he doesn't exist throw UsernameNotFoundException
+     * -> If he exists return an object UserDetails that contain the user's username, password & role
+     * @param username
+     * @return @{@link UserDetails}
+     */
     @Override
     public UserDetails loadUserByUsername(String username) {
         final User customer = userRepository.findByUsername(username);
